@@ -1,88 +1,92 @@
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Text, RoundedBox } from "@react-three/drei";
 import { useRef, useState } from "react";
-import * as THREE from "three";
+import { motion } from "framer-motion";
+import avatar from "@/assets/avatar-wizard.jpg";
 
-function Tag({ drag }: { drag: { x: number; y: number } }) {
-  const group = useRef<THREE.Group>(null);
-  useFrame((_, dt) => {
-    if (!group.current) return;
-    const targetY = drag.x * 0.8;
-    const targetX = -drag.y * 0.6;
-    group.current.rotation.y += (targetY - group.current.rotation.y) * Math.min(1, dt * 6);
-    group.current.rotation.x += (targetX - group.current.rotation.x) * Math.min(1, dt * 6);
-  });
-  return (
-    <Float speed={2} rotationIntensity={0.4} floatIntensity={0.6}>
-      <group ref={group}>
-        {/* lanyard string */}
-        <mesh position={[0, 1.4, 0]}>
-          <cylinderGeometry args={[0.03, 0.03, 1.6, 8]} />
-          <meshStandardMaterial color="#a855f7" emissive="#a855f7" emissiveIntensity={0.5} />
-        </mesh>
-        {/* clip */}
-        <mesh position={[0, 0.7, 0]}>
-          <torusGeometry args={[0.18, 0.05, 12, 24]} />
-          <meshStandardMaterial color="#e2e8f0" metalness={0.9} roughness={0.2} />
-        </mesh>
-        {/* card */}
-        <RoundedBox args={[2.6, 1.4, 0.12]} radius={0.12} smoothness={4} position={[0, -0.1, 0]}>
-          <meshStandardMaterial color="#0f0a1f" metalness={0.4} roughness={0.3} emissive="#3b1f6b" emissiveIntensity={0.4} />
-        </RoundedBox>
-        {/* accent stripe */}
-        <mesh position={[0, 0.35, 0.07]}>
-          <planeGeometry args={[2.6, 0.28]} />
-          <meshBasicMaterial color="#a855f7" />
-        </mesh>
-        <Text position={[0, 0.35, 0.08]} fontSize={0.16} color="#ffffff" anchorX="center" anchorY="middle" letterSpacing={0.05}>
-          WIZARD · LV.13
-        </Text>
-        <Text position={[0, -0.05, 0.07]} fontSize={0.22} color="#ffffff" anchorX="center" anchorY="middle" maxWidth={2.4}>
-          Arkana Farras
-        </Text>
-        <Text position={[0, -0.32, 0.07]} fontSize={0.22} color="#06b6d4" anchorX="center" anchorY="middle" maxWidth={2.4}>
-          Abiputra
-        </Text>
-        <Text position={[0, -0.6, 0.07]} fontSize={0.1} color="#94a3b8" anchorX="center" anchorY="middle">
-          PROGRAMMER · ANIMATOR
-        </Text>
-      </group>
-    </Float>
-  );
-}
-
+/**
+ * Interactive 3D name card built with CSS 3D transforms.
+ * Pure CSS/HTML — no WebGL, no fonts to load, never broken.
+ * Drag (or move pointer) to tilt; smooth spring follow.
+ */
 export default function NameTag3D() {
-  const [drag, setDrag] = useState({ x: 0, y: 0 });
-  const [active, setActive] = useState(false);
-  const start = useRef({ x: 0, y: 0, dx: 0, dy: 0 });
+  const ref = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-  const onDown = (e: React.PointerEvent) => {
-    setActive(true);
-    start.current = { x: e.clientX, y: e.clientY, dx: drag.x, dy: drag.y };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
-  };
   const onMove = (e: React.PointerEvent) => {
-    if (!active) return;
-    const dx = (e.clientX - start.current.x) / 120;
-    const dy = (e.clientY - start.current.y) / 120;
-    setDrag({ x: start.current.dx + dx, y: start.current.dy + dy });
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: -py * 22, y: px * 28 });
   };
-  const onUp = () => setActive(false);
+  const onLeave = () => setTilt({ x: 0, y: 0 });
 
   return (
     <div
-      className="relative w-full h-[280px] sm:h-[340px] cursor-grab active:cursor-grabbing touch-none select-none"
-      onPointerDown={onDown}
+      ref={ref}
       onPointerMove={onMove}
-      onPointerUp={onUp}
-      onPointerCancel={onUp}
+      onPointerLeave={onLeave}
+      className="relative w-full h-[300px] sm:h-[360px] flex items-center justify-center select-none"
+      style={{ perspective: "1200px" }}
     >
-      <Canvas dpr={[1, 1.5]} camera={{ position: [0, 0, 4], fov: 45 }}>
-        <ambientLight intensity={0.7} />
-        <pointLight position={[3, 3, 3]} intensity={1.2} color="#a855f7" />
-        <pointLight position={[-3, -2, 2]} intensity={1} color="#06b6d4" />
-        <Tag drag={drag} />
-      </Canvas>
+      <motion.div
+        animate={{ rotateX: tilt.x, rotateY: tilt.y }}
+        transition={{ type: "spring", stiffness: 120, damping: 15 }}
+        style={{ transformStyle: "preserve-3d" }}
+        className="relative w-[260px] sm:w-[300px] h-[200px] sm:h-[230px]"
+      >
+        {/* Card */}
+        <div
+          className="absolute inset-0 rounded-2xl border border-border bg-card shadow-2xl overflow-hidden"
+          style={{ transform: "translateZ(0px)" }}
+        >
+          {/* shine */}
+          <div
+            className="pointer-events-none absolute inset-0 opacity-60"
+            style={{
+              background: `linear-gradient(${135 + tilt.y * 2}deg, hsl(var(--foreground) / 0.08) 0%, transparent 40%, transparent 60%, hsl(var(--foreground) / 0.06) 100%)`,
+            }}
+          />
+          <div className="relative h-full p-5 flex flex-col justify-between">
+            <div className="flex items-start justify-between">
+              <div>
+                <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono">ID · 2026</p>
+                <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono mt-0.5">JKT — IDN</p>
+              </div>
+              <div className="text-right">
+                <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono">LV.13</p>
+                <p className="text-[10px] tracking-[0.25em] text-foreground font-mono mt-0.5">WIZARD</p>
+              </div>
+            </div>
+
+            <div style={{ transform: "translateZ(40px)" }} className="text-center">
+              <p className="font-display text-2xl sm:text-3xl leading-none">Arkana Farras</p>
+              <p className="font-display text-2xl sm:text-3xl leading-none italic text-muted-foreground">Abiputra</p>
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2" style={{ transform: "translateZ(20px)" }}>
+                <img src={avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-border grayscale" />
+                <div>
+                  <p className="text-[9px] tracking-widest text-muted-foreground font-mono">@arkanaguys177</p>
+                  <p className="text-[9px] tracking-widest text-foreground font-mono">PROGRAMMER · ANIMATOR</p>
+                </div>
+              </div>
+              <div className="flex flex-col items-end gap-0.5">
+                <div className="w-10 h-1 bg-foreground/80 rounded-full" />
+                <div className="w-7 h-1 bg-foreground/40 rounded-full" />
+                <div className="w-9 h-1 bg-foreground/60 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Edge depth */}
+        <div
+          className="absolute inset-0 rounded-2xl border border-border/40"
+          style={{ transform: "translateZ(-12px)", background: "hsl(var(--muted))" }}
+        />
+      </motion.div>
     </div>
   );
 }

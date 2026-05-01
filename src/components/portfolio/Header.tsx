@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, Languages, Sparkles } from "lucide-react";
+import { Menu, X, Sun, Moon, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const langs = [
@@ -41,14 +41,14 @@ export default function Header() {
     <>
       <header className="fixed top-0 inset-x-0 z-40 px-4 sm:px-6 py-4">
         <div className="max-w-6xl mx-auto flex items-center justify-between glass rounded-full px-4 sm:px-6 py-2.5">
-          <a href="#hero" className="flex items-center gap-2 font-display font-bold text-sm sm:text-base">
-            <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-gradient">ARKANA</span>
+          <a href="#hero" className="flex items-center gap-2 font-mono text-xs tracking-[0.3em] uppercase">
+            <span className="w-2 h-2 rounded-full bg-foreground" />
+            <span>Arkana</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map((n) => (
-              <a key={n.id} href={`#${n.id}`} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              <a key={n.id} href={`#${n.id}`} className="text-xs font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors">
                 {n.label}
               </a>
             ))}
@@ -93,7 +93,7 @@ export default function Header() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-8">
-                <span className="font-display text-xl text-gradient">MENU</span>
+                <span className="font-mono text-xs tracking-[0.3em] uppercase text-muted-foreground">— Menu</span>
                 <Button variant="ghost" size="icon" onClick={() => setOpen(false)} className="rounded-full">
                   <X className="w-5 h-5" />
                 </Button>
@@ -108,7 +108,7 @@ export default function Header() {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    className="text-2xl font-display font-semibold py-3 px-4 rounded-xl hover:bg-muted transition-colors"
+                    className="text-3xl font-display py-3 px-4 rounded-xl hover:bg-muted transition-colors"
                   >
                     {n.label}
                   </motion.a>
@@ -116,9 +116,9 @@ export default function Header() {
               </nav>
 
               <div className="mt-auto">
-                <div className="flex items-center gap-2 mb-3 text-sm text-muted-foreground">
-                  <Languages className="w-4 h-4" />
-                  <span>Language / Bahasa / 语言</span>
+                <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground font-mono uppercase tracking-widest">
+                  <Languages className="w-3 h-3" strokeWidth={1.5} />
+                  <span>Language</span>
                 </div>
                 <div className="grid gap-2">
                   {langs.map((l) => (
@@ -130,13 +130,13 @@ export default function Header() {
                       }}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl border transition-all ${
                         i18n.language === l.code
-                          ? "border-primary bg-primary/10 text-foreground"
+                          ? "border-foreground bg-muted text-foreground"
                           : "border-border hover:bg-muted"
                       }`}
                     >
                       <span className="text-2xl">{l.flag}</span>
-                      <span className="font-medium">{l.label}</span>
-                      {i18n.language === l.code && <span className="ml-auto text-xs text-primary">●</span>}
+                      <span className="font-medium text-sm">{l.label}</span>
+                      {i18n.language === l.code && <span className="ml-auto text-xs">●</span>}
                     </button>
                   ))}
                 </div>
