@@ -1,16 +1,27 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import ThreeBackground from "@/components/portfolio/ThreeBackground";
+import Header from "@/components/portfolio/Header";
+import Hero from "@/components/portfolio/Hero";
+import About from "@/components/portfolio/About";
+import School from "@/components/portfolio/School";
+import Gaming from "@/components/portfolio/Gaming";
+import Skills from "@/components/portfolio/Skills";
+import Contact from "@/components/portfolio/Contact";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
+    <div className="relative min-h-screen overflow-x-hidden">
+      <ThreeBackground />
+      <Header />
+      <main>
+        <Hero />
+        <About />
+        <School />
+        <Gaming />
+        <Skills />
+        <Contact />
+      </main>
     </div>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
