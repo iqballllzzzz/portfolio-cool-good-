@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { ArrowDown, Sparkles } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import NameTag3D from "./NameTag3D";
 import avatar from "@/assets/avatar-wizard.jpg";
 
@@ -15,45 +15,48 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className="text-center lg:text-left order-2 lg:order-1"
         >
-          <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-5 text-xs sm:text-sm">
+          <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-6 text-xs">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-50" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground" />
             </span>
-            <Sparkles className="w-3 h-3 text-primary" />
-            <span className="text-muted-foreground">{t("hero.role")}</span>
+            <span className="text-muted-foreground font-mono tracking-widest uppercase text-[10px]">{t("hero.role")}</span>
           </div>
 
-          <p className="text-lg sm:text-xl text-muted-foreground mb-2">{t("hero.greet")}</p>
-          <h1 className="font-display font-black text-4xl sm:text-6xl lg:text-7xl leading-[0.95] mb-4">
-            <span className="block text-gradient">Arkana Farras</span>
-            <span className="block text-foreground">Abiputra</span>
+          <p className="text-sm sm:text-base text-muted-foreground mb-3 font-mono tracking-widest uppercase">{t("hero.greet")}</p>
+          <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] mb-5">
+            <span className="block">Arkana Farras</span>
+            <span className="block italic text-muted-foreground">Abiputra</span>
           </h1>
 
-          <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-6">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-7 leading-relaxed">
             {t("hero.tagline")}
           </p>
 
-          <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-6">
+          <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-7">
             <a
               href="#about"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-primary via-accent to-secondary text-white font-medium shadow-[0_0_30px_hsl(var(--primary)/0.5)] hover:scale-105 transition-transform"
+              className="group inline-flex items-center gap-3 px-6 py-3 rounded-full bg-foreground text-background font-medium text-sm hover:scale-[1.02] transition-transform"
             >
-              {t("hero.cta")} <ArrowDown className="w-4 h-4" />
+              {t("hero.cta")}
+              <ArrowDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
+            </a>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-border hover:bg-muted text-sm font-medium transition-colors"
+            >
+              Contact
             </a>
           </div>
 
           <div className="flex items-center gap-3 justify-center lg:justify-start">
-            <div className="relative">
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent blur-md opacity-70" />
-              <img
-                src={avatar}
-                alt="Arkana — Wizard avatar"
-                className="relative w-14 h-14 rounded-full object-cover border-2 border-primary/50"
-              />
-            </div>
+            <img
+              src={avatar}
+              alt="Arkana — Wizard avatar"
+              className="w-12 h-12 rounded-full object-cover border border-border grayscale"
+            />
             <div className="text-left">
-              <p className="text-sm font-semibold">@arkanaguys177</p>
+              <p className="text-sm font-mono">@arkanaguys177</p>
               <p className="text-xs text-muted-foreground">aka "Wizard" in-game</p>
             </div>
           </div>
@@ -65,9 +68,9 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="order-1 lg:order-2"
         >
-          <div className="glass rounded-3xl p-2 sm:p-4 relative overflow-hidden">
-            <div className="absolute top-3 left-4 text-[10px] uppercase tracking-widest text-muted-foreground z-10">
-              ◆ {t("hero.nicknameLabel")}
+          <div className="relative">
+            <div className="absolute -top-2 left-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground z-10 font-mono">
+              — {t("hero.nicknameLabel")}
             </div>
             <NameTag3D />
           </div>
@@ -77,7 +80,7 @@ export default function Hero() {
       <motion.div
         animate={{ y: [0, 8, 0] }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground flex flex-col items-center gap-1"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground flex flex-col items-center gap-1 font-mono"
       >
         <span>{t("hero.scroll")}</span>
         <ArrowDown className="w-3 h-3" />
