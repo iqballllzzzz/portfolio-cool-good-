@@ -1,3 +1,3 @@
 # Welcome to this site arkana
 
-TODO: jembut
+Portfolio sites made with react, with love. 
