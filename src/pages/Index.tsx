@@ -2,8 +2,8 @@ import ThreeBackground from "@/components/portfolio/ThreeBackground";
 import Header from "@/components/portfolio/Header";
 import Hero from "@/components/portfolio/Hero";
 import About from "@/components/portfolio/About";
-import School from "@/components/portfolio/School";
-import Gaming from "@/components/portfolio/Gaming";
+import Karya from "@/components/portfolio/Karya";
+import Discord from "@/components/portfolio/Discord";
 import Skills from "@/components/portfolio/Skills";
 import Contact from "@/components/portfolio/Contact";
 
@@ -15,8 +15,8 @@ const Index = () => {
       <main>
         <Hero />
         <About />
-        <School />
-        <Gaming />
+        <Karya />
+        <Discord />
         <Skills />
         <Contact />
       </main>

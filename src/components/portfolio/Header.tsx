@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { usePortfolio } from "@/hooks/use-portfolio";
 
 const langs = [
   { code: "id", label: "Bahasa Indonesia", flag: "🇮🇩" },
@@ -12,6 +13,7 @@ const langs = [
 
 export default function Header() {
   const { t, i18n } = useTranslation();
+  const { profile } = usePortfolio();
   const [open, setOpen] = useState(false);
   const [dark, setDark] = useState(true);
 
@@ -31,8 +33,8 @@ export default function Header() {
 
   const navItems = [
     { id: "about", label: t("nav.about") },
-    { id: "school", label: t("nav.school") },
-    { id: "gaming", label: t("nav.gaming") },
+    { id: "karya", label: t("nav.karya") },
+    { id: "discord", label: t("nav.discord") },
     { id: "skills", label: t("nav.skills") },
     { id: "contact", label: t("nav.contact") },
   ];
@@ -43,7 +45,7 @@ export default function Header() {
         <div className="max-w-6xl mx-auto flex items-center justify-between glass rounded-full px-4 sm:px-6 py-2.5">
           <a href="#hero" className="flex items-center gap-2 font-mono text-xs tracking-[0.3em] uppercase">
             <span className="w-2 h-2 rounded-full bg-foreground" />
-            <span>Arkana</span>
+            <span>{profile.name}</span>
           </a>
 
           <nav className="hidden md:flex items-center gap-6">

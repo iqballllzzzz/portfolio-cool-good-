@@ -1,12 +1,20 @@
-import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Gamepad2, Skull, User, Trophy } from "lucide-react";
+import { Gamepad2, MessagesSquare, User, Trophy } from "lucide-react";
+import { usePortfolio } from "@/hooks/use-portfolio";
 import avatar from "@/assets/avatar-wizard.jpg";
 
-export default function Gaming() {
-  const { t } = useTranslation();
+/**
+ * Discord — menampilkan username Discord owner (default: z1_ks).
+ * Menggantikan section "Gaming Life / Forsaken" sesuai permintaan.
+ */
+export default function Discord() {
+  const { profile } = usePortfolio();
+  const username = profile.discordUsername.startsWith("@")
+    ? profile.discordUsername
+    : `@${profile.discordUsername}`;
+
   return (
-    <section id="gaming" className="relative py-20 sm:py-28 px-4 sm:px-6">
+    <section id="discord" className="relative py-20 sm:py-28 px-4 sm:px-6">
       <div className="max-w-5xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -15,10 +23,12 @@ export default function Gaming() {
           className="text-center mb-12"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono mb-3 inline-flex items-center gap-2">
-            <Gamepad2 className="w-3 h-3" strokeWidth={1.5} /> 03 / Playtime
+            <Gamepad2 className="w-3 h-3" strokeWidth={1.5} /> 03 / Discord
           </p>
-          <h2 className="font-display text-5xl sm:text-6xl mb-3">{t("gaming.title")}</h2>
-          <p className="text-muted-foreground text-sm sm:text-base">{t("gaming.subtitle")}</p>
+          <h2 className="font-display text-5xl sm:text-6xl mb-3">Aku Main di Discord</h2>
+          <p className="text-muted-foreground text-sm sm:text-base">
+            Temukan aku di server Discord — ajak kolaborasi atau sekadar ngobrol
+          </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-5">
@@ -29,10 +39,14 @@ export default function Gaming() {
             className="rounded-3xl p-6 sm:p-8 relative overflow-hidden border border-border bg-card/40"
           >
             <div className="flex items-center gap-4 mb-6">
-              <img src={avatar} alt="Wizard" className="w-16 h-16 rounded-2xl object-cover border border-border grayscale" />
+              <img
+                src={profile.avatarUrl || avatar}
+                alt="Profil"
+                className="w-16 h-16 rounded-2xl object-cover border border-border grayscale"
+              />
               <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono">{t("gaming.nickname")}</p>
-                <p className="font-display text-3xl">Wizard</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono">Username Discord</p>
+                <p className="font-display text-3xl">{username}</p>
               </div>
             </div>
 
@@ -40,16 +54,16 @@ export default function Gaming() {
               <div className="flex items-center justify-between p-3 rounded-xl border border-border">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <User className="w-4 h-4" strokeWidth={1.5} />
-                  <span>{t("gaming.username")}</span>
+                  <span>Display Name</span>
                 </div>
-                <span className="font-mono text-sm">@arkanaguys177</span>
+                <span className="font-mono text-sm">{profile.name}</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl border border-border">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Trophy className="w-4 h-4" strokeWidth={1.5} />
-                  <span>Level</span>
+                  <span>Status</span>
                 </div>
-                <span className="font-mono text-sm">13 IRL</span>
+                <span className="font-mono text-sm">Open to collab</span>
               </div>
             </div>
           </motion.div>
@@ -60,21 +74,22 @@ export default function Gaming() {
             viewport={{ once: true }}
             className="rounded-3xl p-6 sm:p-8 relative overflow-hidden border border-border bg-foreground text-background"
           >
-            <p className="text-[10px] uppercase tracking-[0.3em] text-background/60 font-mono mb-3">{t("gaming.favorite")}</p>
+            <p className="text-[10px] uppercase tracking-[0.3em] text-background/60 font-mono mb-3">Discord Server</p>
             <div className="flex items-center gap-3 mb-5">
               <div className="p-3 rounded-2xl border border-background/20">
-                <Skull className="w-7 h-7" strokeWidth={1.5} />
+                <MessagesSquare className="w-7 h-7" strokeWidth={1.5} />
               </div>
               <div>
-                <h3 className="font-display text-4xl">Forsaken</h3>
-                <p className="text-xs text-background/60 font-mono">Roblox · Horror Survival</p>
+                <h3 className="font-display text-4xl">{profile.name}'s Server</h3>
+                <p className="text-xs text-background/60 font-mono">Design · Animation · Chill</p>
               </div>
             </div>
             <p className="text-sm text-background/70 mb-5 leading-relaxed">
-              A 1v16 horror experience where survivors must outsmart killers to escape. Pure adrenaline.
+              Komunitas tempat berbagi karya, diskusi desain & animasi, dan kolaborasi
+              bareng kreator lain.
             </p>
             <div className="grid grid-cols-3 gap-2 text-center">
-              {["Killer", "Survivor", "Pro"].map((b) => (
+              {["Design", "Animation", "Build"].map((b) => (
                 <div key={b} className="px-2 py-2 rounded-xl border border-background/20 text-xs font-mono uppercase tracking-widest">
                   {b}
                 </div>

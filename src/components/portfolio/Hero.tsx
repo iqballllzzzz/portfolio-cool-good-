@@ -2,10 +2,17 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import NameTag3D from "./NameTag3D";
-import avatar from "@/assets/avatar-wizard.jpg";
+import { usePortfolio } from "@/hooks/use-portfolio";
 
 export default function Hero() {
   const { t } = useTranslation();
+  const { profile } = usePortfolio();
+  const username = profile.discordUsername.startsWith("@")
+    ? profile.discordUsername
+    : `@${profile.discordUsername}`;
+  const nameTop = profile.heroNameTop || profile.name;
+  const nameBottom = profile.heroNameBottom;
+
   return (
     <section id="hero" className="relative min-h-screen flex items-center pt-24 pb-12 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto w-full grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -20,17 +27,17 @@ export default function Hero() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-foreground opacity-50" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-foreground" />
             </span>
-            <span className="text-muted-foreground font-mono tracking-widest uppercase text-[10px]">{t("hero.role")}</span>
+            <span className="text-muted-foreground font-mono tracking-widest uppercase text-[10px]">{profile.heroRole}</span>
           </div>
 
           <p className="text-sm sm:text-base text-muted-foreground mb-3 font-mono tracking-widest uppercase">{t("hero.greet")}</p>
           <h1 className="font-display text-5xl sm:text-7xl lg:text-8xl leading-[0.95] mb-5">
-            <span className="block">Arkana Farras</span>
-            <span className="block italic text-muted-foreground">Abiputra</span>
+            <span className="block">{nameTop}</span>
+            {nameBottom && <span className="block italic text-muted-foreground">{nameBottom}</span>}
           </h1>
 
           <p className="text-base sm:text-lg text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-7 leading-relaxed">
-            {t("hero.tagline")}
+            {profile.heroTagline}
           </p>
 
           <div className="flex flex-wrap gap-3 justify-center lg:justify-start mb-7">
@@ -51,13 +58,13 @@ export default function Hero() {
 
           <div className="flex items-center gap-3 justify-center lg:justify-start">
             <img
-              src={avatar}
-              alt="Arkana — Wizard avatar"
+              src={profile.avatarUrl || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80"}
+              alt={`${profile.name} — avatar`}
               className="w-12 h-12 rounded-full object-cover border border-border grayscale"
             />
             <div className="text-left">
-              <p className="text-sm font-mono">@arkanaguys177</p>
-              <p className="text-xs text-muted-foreground">aka "Wizard" in-game</p>
+              <p className="text-sm font-mono">{username}</p>
+              <p className="text-xs text-muted-foreground">aka "{profile.name}" in 3D</p>
             </div>
           </div>
         </motion.div>

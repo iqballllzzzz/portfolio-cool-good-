@@ -1,14 +1,15 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
-import { Cake, MapPin, GraduationCap, Code2 } from "lucide-react";
+import { Cake, MapPin, Palette } from "lucide-react";
+import { usePortfolio } from "@/hooks/use-portfolio";
 
 export default function About() {
-  const { t } = useTranslation();
+  const { profile } = usePortfolio();
+  // School DIHAPUS — cuma 3 chip: umur, kota, peran.
   const chips = [
-    { icon: Cake, label: t("about.chips.age") },
-    { icon: MapPin, label: t("about.chips.city") },
-    { icon: GraduationCap, label: t("about.chips.school") },
-    { icon: Code2, label: t("about.chips.role") },
+    { icon: Cake, label: profile.aboutAge },
+    { icon: MapPin, label: profile.aboutCity },
+    { icon: Palette, label: profile.aboutRole },
   ];
   return (
     <section id="about" className="relative py-20 sm:py-28 px-4 sm:px-6">
@@ -20,7 +21,7 @@ export default function About() {
           viewport={{ once: true }}
           className="font-display text-5xl sm:text-6xl text-center mb-4"
         >
-          {t("about.title")}
+          {profile.name}
         </motion.h2>
         <motion.p
           initial={{ opacity: 0 }}
@@ -29,10 +30,10 @@ export default function About() {
           transition={{ delay: 0.1 }}
           className="text-center text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto mb-12 leading-relaxed"
         >
-          {t("about.body")}
+          {profile.aboutBody}
         </motion.p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
           {chips.map((c, i) => (
             <motion.div
               key={i}

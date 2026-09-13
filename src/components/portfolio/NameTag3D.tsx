@@ -1,15 +1,18 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import avatar from "@/assets/avatar-wizard.jpg";
+import { usePortfolio } from "@/hooks/use-portfolio";
 
 /**
  * Interactive 3D name card built with CSS 3D transforms.
  * Pure CSS/HTML — no WebGL, no fonts to load, never broken.
  * Drag (or move pointer) to tilt; smooth spring follow.
+ * Semua teks dari admin panel (Convex).
  */
 export default function NameTag3D() {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const { profile } = usePortfolio();
 
   const onMove = (e: React.PointerEvent) => {
     const el = ref.current;
@@ -20,6 +23,12 @@ export default function NameTag3D() {
     setTilt({ x: -py * 22, y: px * 28 });
   };
   const onLeave = () => setTilt({ x: 0, y: 0 });
+
+  const nameTop = profile.heroNameTop || profile.name;
+  const nameBottom = profile.heroNameBottom;
+  const username = profile.discordUsername.startsWith("@")
+    ? profile.discordUsername
+    : `@${profile.discordUsername}`;
 
   return (
     <div
@@ -54,22 +63,24 @@ export default function NameTag3D() {
                 <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono mt-0.5">JKT — IDN</p>
               </div>
               <div className="text-right">
-                <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono">LV.13</p>
-                <p className="text-[10px] tracking-[0.25em] text-foreground font-mono mt-0.5">WIZARD</p>
+                <p className="text-[10px] tracking-[0.25em] text-muted-foreground font-mono">LV.16</p>
+                <p className="text-[10px] tracking-[0.25em] text-foreground font-mono mt-0.5">DESIGNER</p>
               </div>
             </div>
 
             <div style={{ transform: "translateZ(40px)" }} className="text-center">
-              <p className="font-display text-2xl sm:text-3xl leading-none">Arkana Farras</p>
-              <p className="font-display text-2xl sm:text-3xl leading-none italic text-muted-foreground">Abiputra</p>
+              <p className="font-display text-2xl sm:text-3xl leading-none">{nameTop}</p>
+              {nameBottom && (
+                <p className="font-display text-2xl sm:text-3xl leading-none italic text-muted-foreground">{nameBottom}</p>
+              )}
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2" style={{ transform: "translateZ(20px)" }}>
-                <img src={avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-border grayscale" />
+                <img src={profile.avatarUrl || avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-border grayscale" />
                 <div>
-                  <p className="text-[9px] tracking-widest text-muted-foreground font-mono">@arkanaguys177</p>
-                  <p className="text-[9px] tracking-widest text-foreground font-mono">PROGRAMMER · ANIMATOR</p>
+                  <p className="text-[9px] tracking-widest text-muted-foreground font-mono">{username}</p>
+                  <p className="text-[9px] tracking-widest text-foreground font-mono">{profile.heroRole.toUpperCase()}</p>
                 </div>
               </div>
               <div className="flex flex-col items-end gap-0.5">
