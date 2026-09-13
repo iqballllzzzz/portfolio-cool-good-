@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Sun, Moon, Languages } from "lucide-react";
+import { Menu, X, Sun, Moon, Languages, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { usePortfolio } from "@/hooks/use-portfolio";
 
@@ -118,6 +118,14 @@ export default function Header() {
               </nav>
 
               <div className="mt-auto">
+                <a
+                  href="/admin"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 px-4 py-2 mb-4 rounded-xl border border-border hover:bg-muted text-xs font-mono uppercase tracking-widest text-muted-foreground transition-colors w-fit"
+                >
+                  <Lock className="w-3 h-3" strokeWidth={1.5} />
+                  Admin Panel
+                </a>
                 <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground font-mono uppercase tracking-widest">
                   <Languages className="w-3 h-3" strokeWidth={1.5} />
                   <span>Language</span>

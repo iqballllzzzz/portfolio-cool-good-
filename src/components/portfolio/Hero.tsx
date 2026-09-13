@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import NameTag3D from "./NameTag3D";
-import { usePortfolio } from "@/hooks/use-portfolio";
+import { usePortfolio, STOCK_AVATAR } from "@/hooks/use-portfolio";
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -20,7 +20,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center lg:text-left order-2 lg:order-1"
+          className="text-center lg:text-left order-2 lg:order-1 pb-16 lg:pb-0"
         >
           <div className="inline-flex items-center gap-2 glass rounded-full px-3 py-1 mb-6 text-xs">
             <span className="relative flex h-2 w-2">
@@ -58,7 +58,7 @@ export default function Hero() {
 
           <div className="flex items-center gap-3 justify-center lg:justify-start">
             <img
-              src={profile.avatarUrl || "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200&q=80"}
+              src={profile.avatarUrl || STOCK_AVATAR}
               alt={`${profile.name} — avatar`}
               className="w-12 h-12 rounded-full object-cover border border-border grayscale"
             />
@@ -73,7 +73,7 @@ export default function Hero() {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="order-1 lg:order-2"
+          className="order-1 lg:order-2 pb-14 lg:pb-0"
         >
           <div className="relative">
             <div className="absolute -top-2 left-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground z-10 font-mono">

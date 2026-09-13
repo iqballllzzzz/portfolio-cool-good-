@@ -33,7 +33,7 @@ export default function About() {
           {profile.aboutBody}
         </motion.p>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+        <div className="flex justify-center items-start gap-3 sm:gap-4 max-w-2xl mx-auto">
           {chips.map((c, i) => (
             <motion.div
               key={i}
@@ -42,7 +42,10 @@ export default function About() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.08 }}
               whileHover={{ y: -4 }}
-              className="rounded-2xl p-5 sm:p-6 text-center border border-border bg-card/40 backdrop-blur-sm"
+              // Kotak tengah lebih tinggi → membentuk segitiga (diamond) terbalik
+              className={`rounded-2xl p-5 sm:p-6 text-center border border-border bg-card/40 backdrop-blur-sm flex-1 ${
+                i === 1 ? "mt-10 sm:mt-14" : "mt-0"
+              }`}
             >
               <div className="inline-flex p-3 rounded-xl bg-muted mb-4 border border-border">
                 <c.icon className="w-5 h-5" strokeWidth={1.5} />

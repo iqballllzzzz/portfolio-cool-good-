@@ -1,8 +1,29 @@
 import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
+interface Defaults {
+  name: string;
+  discordUsername: string;
+  email: string;
+  avatarUrl: string;
+  heroRole: string;
+  heroTagline: string;
+  heroNameTop: string;
+  heroNameBottom: string;
+  aboutBody: string;
+  aboutAge: string;
+  aboutCity: string;
+  aboutRole: string;
+  karyaTitle: string;
+  karyaSubtitle: string;
+  skillsLabels: string[];
+  contactTitle: string;
+  contactSubtitle: string;
+  footer: string;
+}
+
 // Default profile saat pertama kali — bisa di-edit lewat admin panel.
-const DEFAULTS: Record<string, string | string[]> = {
+const DEFAULTS: Defaults = {
   name: "Sinar",
   discordUsername: "z1_ks",
   email: "hi@sinar.dev",
@@ -40,8 +61,24 @@ export const ensureProfile = mutation({
     const existing = await ctx.db.query("profile").first();
     if (existing) return existing._id;
     return await ctx.db.insert("profile", {
-      ...DEFAULTS,
-      skillsLabels: DEFAULTS.skillsLabels as string[],
+      name: DEFAULTS.name,
+      discordUsername: DEFAULTS.discordUsername,
+      email: DEFAULTS.email,
+      avatarUrl: "",
+      heroRole: DEFAULTS.heroRole,
+      heroTagline: DEFAULTS.heroTagline,
+      heroNameTop: DEFAULTS.heroNameTop,
+      heroNameBottom: DEFAULTS.heroNameBottom,
+      aboutBody: DEFAULTS.aboutBody,
+      aboutAge: DEFAULTS.aboutAge,
+      aboutCity: DEFAULTS.aboutCity,
+      aboutRole: DEFAULTS.aboutRole,
+      karyaTitle: DEFAULTS.karyaTitle,
+      karyaSubtitle: DEFAULTS.karyaSubtitle,
+      skillsLabels: DEFAULTS.skillsLabels,
+      contactTitle: DEFAULTS.contactTitle,
+      contactSubtitle: DEFAULTS.contactSubtitle,
+      footer: DEFAULTS.footer,
       updatedAt: Date.now(),
     });
   },
@@ -121,5 +158,25 @@ export const setPassword = mutation({
       updatedAt: Date.now(),
     });
     return { ok: true };
+  },
+});
+
+/** Ganti foto profil — upload file ke storage Convex, simpan URL-nya. */
+export const setAvatar = mutation({
+  args: {
+    password: v.string(),
+    storageId: v.id("_storage"),
+  },
+  handler: async (ctx, args) => {
+    if (!(await _cekPassword(ctx, args.password))) throw new Error("Password salah");
+    const row = await ctx.db.query("profile").first();
+    if (!row) throw new Error("Profil tidak ditemukan");
+    const url = (await ctx.storage.getUrl(args.storageId)) ?? "";
+    if (!url) throw new Error("File tidak ditemukan");
+    await ctx.db.patch(row._id, {
+      avatarUrl: url,
+      updatedAt: Date.now(),
+    });
+    return { ok: true, url };
   },
 });

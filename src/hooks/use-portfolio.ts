@@ -91,3 +91,7 @@ export const STOCK_PHOTOS = [
   "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80",
   "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
 ];
+
+/** Fallback avatar stock (dipakai kalau admin belum upload foto profil). */
+export const STOCK_AVATAR =
+  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80";

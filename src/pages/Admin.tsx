@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { motion } from "framer-motion";
-import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft } from "lucide-react";
+import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft, KeyRound, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { STOCK_AVATAR } from "@/hooks/use-portfolio";
 
 export default function Admin() {
   // ── Password gate ────────────────────────────────────────────────────────
@@ -31,12 +32,17 @@ export default function Admin() {
   const addMedia = useMutation(api.media.addMedia);
   const removeMedia = useMutation(api.media.removeMedia);
   const generateUploadUrl = useMutation(api.media.generateUploadUrl);
+  const setAvatar = useMutation(api.profile.setAvatar);
+  const setPassword = useMutation(api.profile.setPassword);
 
   // ── Form state (isi otomatis dari profil) ─────────────────────────────────
   const [form, setForm] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [newPw, setNewPw] = useState("");
+  const [newPw2, setNewPw2] = useState("");
 
   // Isi form dari server saat pertama load
   const filled = Object.keys(form).length === 0 && profile;
@@ -125,6 +131,51 @@ export default function Admin() {
     try {
       await removeMedia({ password: pw, id: id as any });
       setMsg("✓ Dihapus");
+    } catch (e: any) {
+      setMsg(`✕ ${e.message}`);
+    }
+  };
+
+  // ── Upload foto profil (file → storage → avatarUrl) ───────────────────────
+  const handleAvatarUpload = async (file: File | null) => {
+    if (!file) return;
+    setUploadingAvatar(true);
+    setMsg("");
+    try {
+      const uploadUrl = await generateUploadUrl();
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!res.ok) throw new Error("Upload gagal");
+      const { storageId } = await res.json();
+      const r = await setAvatar({ password: pw, storageId });
+      setMsg("✓ Foto profil diganti — langsung tampil di semua kartu");
+      return r.url;
+    } catch (e: any) {
+      setMsg(`✕ Upload gagal: ${e.message}`);
+      return null;
+    } finally {
+      setUploadingAvatar(false);
+    }
+  };
+
+  // ── Ganti password admin ──────────────────────────────────────────────────
+  const handleChangePw = async () => {
+    if (newPw.length < 6) {
+      setMsg("✕ Password minimal 6 karakter");
+      return;
+    }
+    if (newPw !== newPw2) {
+      setMsg("✕ Konfirmasi password tidak sama");
+      return;
+    }
+    try {
+      await setPassword({ currentPassword: pw, newPassword: newPw });
+      setMsg("✓ Password diganti — pakai yang baru dari sekarang");
+      setNewPw("");
+      setNewPw2("");
     } catch (e: any) {
       setMsg(`✕ ${e.message}`);
     }
@@ -243,6 +294,36 @@ export default function Admin() {
           </a>
         </div>
 
+        {/* PROFIL — foto profil (upload file langsung) */}
+        <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
+          <h2 className="font-display text-xl mb-4 flex items-center gap-2">
+            <UserCircle className="w-5 h-5" strokeWidth={1.5} /> Foto Profil
+          </h2>
+          <div className="flex items-center gap-5">
+            <img
+              src={profile?.avatarUrl || STOCK_AVATAR}
+              alt="Avatar"
+              className="w-20 h-20 rounded-full object-cover border border-border grayscale"
+            />
+            <div>
+              <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border hover:bg-muted cursor-pointer text-sm transition-colors">
+                <Upload className="w-4 h-4" />
+                <span>{uploadingAvatar ? "Mengunggah…" : "Upload Foto Profil"}</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleAvatarUpload(e.target.files?.[0] ?? null)}
+                  disabled={uploadingAvatar}
+                />
+              </label>
+              <p className="text-xs text-muted-foreground mt-2">
+                Foto diganti langsung — tampil di kartu nama 3D, hero, & Discord
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* PROFIL — teks */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
           <h2 className="font-display text-xl mb-4">Informasi Profil</h2>
@@ -293,8 +374,41 @@ export default function Admin() {
           {renderMediaGrid(videos ?? [], "video")}
         </div>
 
+        {/* GANTI PASSWORD */}
+        <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
+          <h2 className="font-display text-xl mb-4 flex items-center gap-2">
+            <KeyRound className="w-5 h-5" strokeWidth={1.5} /> Ganti Password
+          </h2>
+          <div className="space-y-3 max-w-sm">
+            <div>
+              <label className="block text-xs font-mono text-muted-foreground mb-1">Password baru</label>
+              <input
+                type="password"
+                value={newPw}
+                onChange={(e) => setNewPw(e.target.value)}
+                placeholder="Minimal 6 karakter"
+                className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-sm font-mono focus:outline-none focus:ring-1 focus:ring-foreground"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-mono text-muted-foreground mb-1">Ulangi password baru</label>
+              <input
+                type="password"
+                value={newPw2}
+                onChange={(e) => setNewPw2(e.target.value)}
+                placeholder="Ketik ulang"
+                className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-sm font-mono focus:outline-none focus:ring-1 focus:ring-foreground"
+              />
+            </div>
+            <Button onClick={handleChangePw} variant="outline">
+              <KeyRound className="w-4 h-4 mr-2" />
+              Ganti Password
+            </Button>
+          </div>
+        </div>
+
         <p className="text-xs text-muted-foreground text-center mt-8 font-mono">
-          Password default: <code className="bg-muted px-1 py-0.5 rounded">admin123</code> — ganti dari panel setelah login.
+          Admin panel: tambahkan <code className="bg-muted px-1 py-0.5 rounded">/admin</code> di akhir URL situs.
         </p>
       </div>
     </div>

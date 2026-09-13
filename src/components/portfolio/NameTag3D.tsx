@@ -1,7 +1,6 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
-import avatar from "@/assets/avatar-wizard.jpg";
-import { usePortfolio } from "@/hooks/use-portfolio";
+import { usePortfolio, STOCK_AVATAR } from "@/hooks/use-portfolio";
 
 /**
  * Interactive 3D name card built with CSS 3D transforms.
@@ -77,7 +76,7 @@ export default function NameTag3D() {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2" style={{ transform: "translateZ(20px)" }}>
-                <img src={profile.avatarUrl || avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-border grayscale" />
+                <img src={profile.avatarUrl || STOCK_AVATAR} alt="" className="w-8 h-8 rounded-full object-cover border border-border grayscale" />
                 <div>
                   <p className="text-[9px] tracking-widest text-muted-foreground font-mono">{username}</p>
                   <p className="text-[9px] tracking-widest text-foreground font-mono">{profile.heroRole.toUpperCase()}</p>
