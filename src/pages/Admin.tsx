@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { useMutation, useQueries } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { motion } from "framer-motion";
 import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft, KeyRound, UserCircle } from "lucide-react";
@@ -25,9 +25,15 @@ export default function Admin() {
   };
 
   // ── Data ──────────────────────────────────────────────────────────────────
-  const profile = useQuery(api.profile.getProfile);
-  const photos = useQuery(api.media.listByKind, { kind: "photo" });
-  const videos = useQuery(api.media.listByKind, { kind: "video" });
+  const queryMap = useMemo(() => ({
+    profile: { query: api.profile.getProfile, args: {} },
+    photos: { query: api.media.listByKind, args: { kind: "photo" } },
+    videos: { query: api.media.listByKind, args: { kind: "video" } },
+  }), []);
+  const results = useQueries(queryMap);
+  const profile = results.profile instanceof Error ? null : results.profile;
+  const photos = results.photos instanceof Error ? [] : results.photos;
+  const videos = results.videos instanceof Error ? [] : results.videos;
   const updateProfile = useMutation(api.profile.updateProfile);
   const addMedia = useMutation(api.media.addMedia);
   const removeMedia = useMutation(api.media.removeMedia);

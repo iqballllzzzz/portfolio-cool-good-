@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useQuery, useMutation } from "convex/react";
+import { useEffect, useMemo, useState } from "react";
+import { useQueries, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 
 export type PortfolioProfile = {
@@ -35,24 +35,28 @@ export type PortfolioMedia = {
   createdAt: number;
 };
 
-/**
- * Hook utama: ambil profil + media dari Convex.
- * Kalau Convex belum dikonfigurasi (dev lokal), fallback ke default statis
- * supaya UI tetap tampil.
- */
 export function usePortfolio() {
-  const profile = useQuery(api.profile.getProfile);
-  const photos = useQuery(api.media.listByKind, { kind: "photo" });
-  const videos = useQuery(api.media.listByKind, { kind: "video" });
-  // Seed otomatis: kalau deployment masih kosong, buat profil default sekali.
+  const queryMap = useMemo(() => ({
+    profile: { query: api.profile.getProfile, args: {} },
+    photos: { query: api.media.listByKind, args: { kind: "photo" } },
+    videos: { query: api.media.listByKind, args: { kind: "video" } },
+  }), []);
+
+  const results = useQueries(queryMap);
+
+  const rawProfile = results.profile instanceof Error ? null : results.profile;
+  const rawPhotos = results.photos instanceof Error ? null : results.photos;
+  const rawVideos = results.videos instanceof Error ? null : results.videos;
+
   const ensure = useMutation(api.profile.ensureProfile);
   const [seeded, setSeeded] = useState(false);
+
   useEffect(() => {
-    if (profile === null && !seeded) {
+    if (rawProfile === null && !seeded) {
       setSeeded(true);
       void ensure({}).catch(() => {});
     }
-  }, [profile, seeded, ensure]);
+  }, [rawProfile, seeded, ensure]);
 
   const fallbackProfile: PortfolioProfile = {
     _id: "fallback",
@@ -78,20 +82,18 @@ export function usePortfolio() {
   };
 
   return {
-    profile: profile ?? fallbackProfile,
-    photos: photos ?? [],
-    videos: videos ?? [],
-    loading: profile === undefined,
+    profile: (rawProfile as PortfolioProfile) ?? fallbackProfile,
+    photos: (Array.isArray(rawPhotos) ? rawPhotos : []) as PortfolioMedia[],
+    videos: (Array.isArray(rawVideos) ? rawVideos : []) as PortfolioMedia[],
+    loading: results.profile === undefined,
   };
 }
 
-/** Fallback stock untuk panel foto (dipakai kalau belum ada upload). */
 export const STOCK_PHOTOS = [
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80",
   "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80",
   "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80",
 ];
 
-/** Fallback avatar stock (dipakai kalau admin belum upload foto profil). */
 export const STOCK_AVATAR =
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&q=80";
