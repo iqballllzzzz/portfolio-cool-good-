@@ -24,9 +24,9 @@ export default function Discord() {
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono mb-3 inline-flex items-center gap-2">
             <Gamepad2 className="w-3 h-3" strokeWidth={1.5} /> 03 / Discord
           </p>
-          <h2 className="font-display text-5xl sm:text-6xl mb-3">Aku Main di Discord</h2>
+          <h2 className="font-display text-5xl sm:text-6xl mb-3">I'm on Discord</h2>
           <p className="text-muted-foreground text-sm sm:text-base">
-            Temukan aku di server Discord — ajak kolaborasi atau sekadar ngobrol
+            Find me on Discord — hit me up for a collab or just to chat
           </p>
         </motion.div>
 
@@ -40,11 +40,11 @@ export default function Discord() {
             <div className="flex items-center gap-4 mb-6">
               <img
                 src={profile.avatarUrl || STOCK_AVATAR}
-                alt="Profil"
+                alt="Profile"
                 className="w-16 h-16 rounded-2xl object-cover border border-border grayscale"
               />
               <div>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono">Username Discord</p>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono">Discord Username</p>
                 <p className="font-display text-3xl">{username}</p>
               </div>
             </div>
@@ -84,11 +84,11 @@ export default function Discord() {
               </div>
             </div>
             <p className="text-sm text-background/70 mb-5 leading-relaxed">
-              Komunitas tempat berbagi karya, diskusi desain & animasi, dan kolaborasi
-              bareng kreator lain.
+              A community to share work, talk design & animation, and collab
+              with other creators.
             </p>
             <div className="grid grid-cols-3 gap-2 text-center">
-              {["Design", "Animation", "Build"].map((b) => (
+              {["Design", "Editor", "Builder"].map((b) => (
                 <div key={b} className="px-2 py-2 rounded-xl border border-background/20 text-xs font-mono uppercase tracking-widest">
                   {b}
                 </div>

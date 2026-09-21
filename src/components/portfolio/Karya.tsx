@@ -29,7 +29,7 @@ export default function Karya() {
           className="text-center mb-12"
         >
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-mono mb-3 inline-flex items-center gap-2">
-            <Box className="w-3 h-3" strokeWidth={1.5} /> 02 / Karya 3D
+            <Box className="w-3 h-3" strokeWidth={1.5} /> 02 / 3D Works
           </p>
           <h2 className="font-display text-5xl sm:text-6xl mb-3">{profile.karyaTitle}</h2>
           <p className="text-muted-foreground text-sm sm:text-base">{profile.karyaSubtitle}</p>
@@ -44,7 +44,7 @@ export default function Karya() {
         >
           <div className="flex items-center gap-2 px-2 py-2 mb-2">
             <ImageIcon className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-            <h3 className="font-mono uppercase tracking-widest text-xs text-muted-foreground">Foto</h3>
+            <h3 className="font-mono uppercase tracking-widest text-xs text-muted-foreground">Photos</h3>
           </div>
           <Swiper
             modules={[Autoplay, EffectCoverflow, Pagination]}
@@ -63,7 +63,7 @@ export default function Karya() {
                 <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-border">
                   <img
                     src={item.url}
-                    alt={`Karya ${i + 1}`}
+                    alt={`Work ${i + 1}`}
                     className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
                     loading="lazy"
                   />
@@ -82,7 +82,7 @@ export default function Karya() {
         >
           <div className="flex items-center gap-2 px-2 py-2 mb-2">
             <Video className="w-4 h-4 text-muted-foreground" strokeWidth={1.5} />
-            <h3 className="font-mono uppercase tracking-widest text-xs text-muted-foreground">Video</h3>
+            <h3 className="font-mono uppercase tracking-widest text-xs text-muted-foreground">Videos</h3>
           </div>
           {videoItems.length > 0 ? (
             <Swiper
@@ -114,7 +114,7 @@ export default function Karya() {
           ) : (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center border border-dashed border-border rounded-2xl">
               <Video className="w-8 h-8 text-muted-foreground/40" strokeWidth={1.5} />
-              <p className="text-sm text-muted-foreground">Belum ada video — tambah lewat admin panel</p>
+              <p className="text-sm text-muted-foreground">No videos yet — add them from the admin panel</p>
             </div>
           )}
         </motion.div>

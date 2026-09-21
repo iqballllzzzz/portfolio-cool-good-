@@ -8,7 +8,7 @@ export default function Skills() {
   const { profile } = usePortfolio();
   const labels = profile.skillsLabels.length === 4 ? profile.skillsLabels : ["Animation", "Design 3D", "Design 2D", "Builder"];
   // Deskripsi teknis — statis, tidak perlu diubah dari admin.
-  const descs = ["Motion · 2D · FX", "Modeling · Render", "UI · Ilustrasi", "Build · Sculpt"];
+  const descs = ["Motion · 2D · FX", "Modeling · Render", "UI · Illustration", "Build · Sculpt"];
 
   return (
     <section id="skills" className="relative py-20 sm:py-28 px-4 sm:px-6">
@@ -20,7 +20,7 @@ export default function Skills() {
           viewport={{ once: true }}
           className="font-display text-5xl sm:text-6xl text-center mb-12"
         >
-          Yang Aku Kerjakan
+          What I Do
         </motion.h2>
 
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

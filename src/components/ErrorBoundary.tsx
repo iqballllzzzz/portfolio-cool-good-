@@ -28,15 +28,15 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-[#0a0a0a] text-white flex flex-col items-center justify-center p-6 text-center font-sans">
           <div className="max-w-md bg-[#141414] border border-white/10 rounded-2xl p-8 shadow-2xl">
-            <h2 className="text-xl font-bold mb-2">Terjadi Sedikit Kendala</h2>
+            <h2 className="text-xl font-bold mb-2">Something went wrong</h2>
             <p className="text-white/60 text-sm mb-6">
-              Halaman mengalami kesalahan saat memuat komponen atau data.
+              This page hit an error while loading a component or data.
             </p>
             <button
               onClick={() => window.location.reload()}
               className="px-5 py-2.5 rounded-xl bg-white text-black font-semibold text-sm hover:bg-white/90 transition"
             >
-              Muat Ulang Halaman
+              Reload Page
             </button>
           </div>
         </div>

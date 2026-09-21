@@ -24,24 +24,24 @@ interface Defaults {
 
 // Default profile saat pertama kali — bisa di-edit lewat admin panel.
 const DEFAULTS: Defaults = {
-  name: "Sinar",
+  name: "wazouzkii",
   discordUsername: "z1_ks",
   email: "hi@sinar.dev",
   avatarUrl: "",
   heroRole: "Designer & Animator",
-  heroTagline: "Kreator berusia 16 tahun dari Jakarta — membawa ide menjadi visual yang hidup.",
-  heroNameTop: "Sinar",
+  heroTagline: "16-year-old creator from Jakarta — turning ideas into living visuals.",
+  heroNameTop: "wazouzkii",
   heroNameBottom: "",
-  aboutBody: "Hai! Aku Sinar. Aku desainer dan animator yang suka membuat karya visual — dari animasi 2D sampai modeling 3D. Aku percaya setiap ide punya potensi jadi sesuatu yang luar biasa kalau dituangkan dengan tepat.",
-  aboutAge: "16 tahun",
-  aboutCity: "Jakarta Selatan",
+  aboutBody: "Hi! I'm wazouzkii. I'm a designer and animator who loves making visual work — from 2D animation to 3D modeling. I believe every idea can become something amazing when crafted right.",
+  aboutAge: "16 years old",
+  aboutCity: "South Jakarta",
   aboutRole: "Designer & Animator",
-  karyaTitle: "Karya 3D Ku",
-  karyaSubtitle: "Proyek animasi dan modeling yang telah aku buat",
+  karyaTitle: "My 3D Works",
+  karyaSubtitle: "Animation and modeling projects I've made",
   skillsLabels: ["Animation", "Design 3D", "Design 2D", "Builder"],
-  contactTitle: "Mari Terhubung",
-  contactSubtitle: "Temukan aku di Discord atau kirim email",
-  footer: "Dibuat dengan semangat oleh Sinar — © 2026",
+  contactTitle: "Let's Connect",
+  contactSubtitle: "Find me on Discord or send an email",
+  footer: "Made with passion by wazouzkii — © 2026",
 };
 
 // ── QUERIES ──────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useMutation, useQueries } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { motion } from "framer-motion";
@@ -18,9 +18,9 @@ export default function Admin() {
     try {
       const r = await checkPw({ password: pw });
       if (r.ok) setLoggedIn(true);
-      else setPwError("Password salah");
+      else setPwError("Wrong password");
     } catch {
-      setPwError("Gagal menghubungi server");
+      setPwError("Failed to reach the server");
     }
   };
 
@@ -101,9 +101,9 @@ export default function Admin() {
         contactSubtitle: f.contactSubtitle,
         footer: f.footer,
       });
-      setMsg("✓ Tersimpan");
+      setMsg("✓ Saved");
     } catch (e: any) {
-      setMsg(`✕ ${e.message ?? "Gagal"}`);
+      setMsg(`✕ ${e.message ?? "Failed"}`);
     } finally {
       setSaving(false);
     }
@@ -120,12 +120,12 @@ export default function Admin() {
         headers: { "Content-Type": file.type },
         body: file,
       });
-      if (!res.ok) throw new Error("Upload gagal");
+      if (!res.ok) throw new Error("Upload failed");
       const { storageId } = await res.json();
       await addMedia({ password: pw, kind, storageId, title: file.name });
-      setMsg(`✓ ${file.name} ditambahkan`);
+      setMsg(`✓ ${file.name} added`);
     } catch (e: any) {
-      setMsg(`✕ Upload gagal: ${e.message}`);
+      setMsg(`✕ Upload failed: ${e.message}`);
     } finally {
       setUploading(false);
     }
@@ -133,10 +133,10 @@ export default function Admin() {
 
   // ── Hapus media ───────────────────────────────────────────────────────────
   const handleRemove = async (id: string) => {
-    if (!confirm("Hapus file ini?")) return;
+    if (!confirm("Delete this file?")) return;
     try {
       await removeMedia({ password: pw, id: id as any });
-      setMsg("✓ Dihapus");
+      setMsg("✓ Deleted");
     } catch (e: any) {
       setMsg(`✕ ${e.message}`);
     }
@@ -154,13 +154,13 @@ export default function Admin() {
         headers: { "Content-Type": file.type },
         body: file,
       });
-      if (!res.ok) throw new Error("Upload gagal");
+      if (!res.ok) throw new Error("Upload failed");
       const { storageId } = await res.json();
       const r = await setAvatar({ password: pw, storageId });
-      setMsg("✓ Foto profil diganti — langsung tampil di semua kartu");
+      setMsg("✓ Profile photo updated — shows everywhere instantly");
       return r.url;
     } catch (e: any) {
-      setMsg(`✕ Upload gagal: ${e.message}`);
+      setMsg(`✕ Upload failed: ${e.message}`);
       return null;
     } finally {
       setUploadingAvatar(false);
@@ -170,16 +170,16 @@ export default function Admin() {
   // ── Ganti password admin ──────────────────────────────────────────────────
   const handleChangePw = async () => {
     if (newPw.length < 6) {
-      setMsg("✕ Password minimal 6 karakter");
+      setMsg("✕ Password must be at least 6 characters");
       return;
     }
     if (newPw !== newPw2) {
-      setMsg("✕ Konfirmasi password tidak sama");
+      setMsg("✕ Passwords don't match");
       return;
     }
     try {
       await setPassword({ currentPassword: pw, newPassword: newPw });
-      setMsg("✓ Password diganti — pakai yang baru dari sekarang");
+      setMsg("✓ Password changed — use the new one from now on");
       setNewPw("");
       setNewPw2("");
     } catch (e: any) {
@@ -205,7 +205,7 @@ export default function Admin() {
             value={pw}
             onChange={(e) => setPw(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-            placeholder="Masukkan password…"
+            placeholder="Enter password…"
             className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground mb-4 font-mono text-sm focus:outline-none focus:ring-1 focus:ring-foreground"
           />
           {pwError && (
@@ -214,10 +214,10 @@ export default function Admin() {
             </p>
           )}
           <Button onClick={handleLogin} className="w-full">
-            Masuk
+            Sign in
           </Button>
           <a href="/" className="block text-center text-xs text-muted-foreground mt-4 hover:underline">
-            ← Kembali ke portfolio
+            ← Back to portfolio
           </a>
         </motion.div>
       </div>
@@ -225,22 +225,22 @@ export default function Admin() {
   }
 
   const fields: { key: string; label: string; rows?: number }[] = [
-    { key: "name", label: "Nama" },
-    { key: "discordUsername", label: "Username Discord" },
-    { key: "email", label: "Email Say Hi" },
-    { key: "heroNameTop", label: "Hero — Baris 1 (Nama)" },
-    { key: "heroNameBottom", label: "Hero — Baris 2 (Italic)" },
+    { key: "name", label: "Name" },
+    { key: "discordUsername", label: "Discord Username" },
+    { key: "email", label: "Say Hi Email" },
+    { key: "heroNameTop", label: "Hero — Line 1 (Name)" },
+    { key: "heroNameBottom", label: "Hero — Line 2 (Italic)" },
     { key: "heroRole", label: "Hero Role" },
     { key: "heroTagline", label: "Hero Tagline", rows: 2 },
-    { key: "aboutBody", label: "Tentang Saya", rows: 3 },
-    { key: "aboutAge", label: "Umur (contoh: 16 tahun)" },
-    { key: "aboutCity", label: "Kota" },
-    { key: "aboutRole", label: "Peran (About)" },
-    { key: "karyaTitle", label: "Judul Section Karya" },
-    { key: "karyaSubtitle", label: "Subtitle Karya" },
-    { key: "skills", label: "Skills (koma)" },
-    { key: "contactTitle", label: "Judul Contact" },
-    { key: "contactSubtitle", label: "Subtitle Contact" },
+    { key: "aboutBody", label: "About Me", rows: 3 },
+    { key: "aboutAge", label: "Age (e.g. 16 years old)" },
+    { key: "aboutCity", label: "City" },
+    { key: "aboutRole", label: "Role (About)" },
+    { key: "karyaTitle", label: "Works Section Title" },
+    { key: "karyaSubtitle", label: "Works Subtitle" },
+    { key: "skills", label: "Skills (comma separated)" },
+    { key: "contactTitle", label: "Contact Title" },
+    { key: "contactSubtitle", label: "Contact Subtitle" },
     { key: "footer", label: "Footer" },
   ];
 
@@ -248,10 +248,10 @@ export default function Admin() {
     <div className="mt-4">
       <h3 className="font-mono text-xs uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
         {kind === "photo" ? <ImageIcon className="w-3 h-3" /> : <Video className="w-3 h-3" />}
-        {kind === "photo" ? "Foto" : "Video"} ({items.length})
+        {kind === "photo" ? "Photos" : "Videos"} ({items.length})
       </h3>
       {items.length === 0 && (
-        <p className="text-sm text-muted-foreground mb-3">Belum ada {kind}</p>
+        <p className="text-sm text-muted-foreground mb-3">No {kind} yet</p>
       )}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
         {items.map((item) => (
@@ -273,7 +273,7 @@ export default function Admin() {
       </div>
       <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border hover:bg-muted cursor-pointer text-sm transition-colors">
         <Upload className="w-4 h-4" />
-        <span>{uploading ? "Mengunggah…" : `Upload ${kind === "photo" ? "Foto" : "Video"}`}</span>
+        <span>{uploading ? "Uploading…" : `Upload ${kind === "photo" ? "Photo" : "Video"}`}</span>
         <input
           type="file"
           accept={kind === "photo" ? "image/*" : "video/*"}
@@ -296,14 +296,14 @@ export default function Admin() {
             <h1 className="font-display text-3xl">Admin Panel</h1>
           </div>
           <a href="/" className="text-xs text-muted-foreground hover:underline font-mono">
-            Lihat portfolio →
+            View portfolio →
           </a>
         </div>
 
         {/* PROFIL — foto profil (upload file langsung) */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
           <h2 className="font-display text-xl mb-4 flex items-center gap-2">
-            <UserCircle className="w-5 h-5" strokeWidth={1.5} /> Foto Profil
+            <UserCircle className="w-5 h-5" strokeWidth={1.5} /> Profile Photo
           </h2>
           <div className="flex items-center gap-5">
             <img
@@ -314,7 +314,7 @@ export default function Admin() {
             <div>
               <label className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-border hover:bg-muted cursor-pointer text-sm transition-colors">
                 <Upload className="w-4 h-4" />
-                <span>{uploadingAvatar ? "Mengunggah…" : "Upload Foto Profil"}</span>
+                <span>{uploadingAvatar ? "Uploading…" : "Upload Profile Photo"}</span>
                 <input
                   type="file"
                   accept="image/*"
@@ -324,7 +324,7 @@ export default function Admin() {
                 />
               </label>
               <p className="text-xs text-muted-foreground mt-2">
-                Foto diganti langsung — tampil di kartu nama 3D, hero, & Discord
+                Photo updates instantly — appears on the 3D name card, hero, & Discord
               </p>
             </div>
           </div>
@@ -332,7 +332,7 @@ export default function Admin() {
 
         {/* PROFIL — teks */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
-          <h2 className="font-display text-xl mb-4">Informasi Profil</h2>
+          <h2 className="font-display text-xl mb-4">Profile Information</h2>
           <div className="space-y-3">
             {fields.map(({ key, label, rows }) => (
               <div key={key}>
@@ -364,57 +364,57 @@ export default function Admin() {
 
           <Button onClick={handleSave} disabled={saving} className="mt-4">
             <Save className="w-4 h-4 mr-2" />
-            {saving ? "Menyimpan…" : "Simpan"}
+            {saving ? "Saving…" : "Save"}
           </Button>
         </div>
 
         {/* MEDIA — foto */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
-          <h2 className="font-display text-xl mb-2">Foto Karya</h2>
+          <h2 className="font-display text-xl mb-2">Work Photos</h2>
           {renderMediaGrid(photos ?? [], "photo")}
         </div>
 
         {/* MEDIA — video */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
-          <h2 className="font-display text-xl mb-2">Video Karya</h2>
+          <h2 className="font-display text-xl mb-2">Work Videos</h2>
           {renderMediaGrid(videos ?? [], "video")}
         </div>
 
         {/* GANTI PASSWORD */}
         <div className="rounded-3xl p-6 border border-border bg-card/40 mb-6">
           <h2 className="font-display text-xl mb-4 flex items-center gap-2">
-            <KeyRound className="w-5 h-5" strokeWidth={1.5} /> Ganti Password
+            <KeyRound className="w-5 h-5" strokeWidth={1.5} /> Change Password
           </h2>
           <div className="space-y-3 max-w-sm">
             <div>
-              <label className="block text-xs font-mono text-muted-foreground mb-1">Password baru</label>
+              <label className="block text-xs font-mono text-muted-foreground mb-1">New password</label>
               <input
                 type="password"
                 value={newPw}
                 onChange={(e) => setNewPw(e.target.value)}
-                placeholder="Minimal 6 karakter"
+                placeholder="At least 6 characters"
                 className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-sm font-mono focus:outline-none focus:ring-1 focus:ring-foreground"
               />
             </div>
             <div>
-              <label className="block text-xs font-mono text-muted-foreground mb-1">Ulangi password baru</label>
+              <label className="block text-xs font-mono text-muted-foreground mb-1">Repeat new password</label>
               <input
                 type="password"
                 value={newPw2}
                 onChange={(e) => setNewPw2(e.target.value)}
-                placeholder="Ketik ulang"
+                placeholder="Type again"
                 className="w-full px-3 py-2 rounded-xl border border-border bg-background text-foreground text-sm font-mono focus:outline-none focus:ring-1 focus:ring-foreground"
               />
             </div>
             <Button onClick={handleChangePw} variant="outline">
               <KeyRound className="w-4 h-4 mr-2" />
-              Ganti Password
+              Change Password
             </Button>
           </div>
         </div>
 
         <p className="text-xs text-muted-foreground text-center mt-8 font-mono">
-          Admin panel: tambahkan <code className="bg-muted px-1 py-0.5 rounded">/admin</code> di akhir URL situs.
+          Admin panel: add <code className="bg-muted px-1 py-0.5 rounded">/admin</code> to the end of the site URL.
         </p>
       </div>
     </div>
