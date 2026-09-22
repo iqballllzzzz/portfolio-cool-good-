@@ -41,6 +41,7 @@ export default function Discord() {
               <img
                 src={profile.avatarUrl || STOCK_AVATAR}
                 alt="Profile"
+                loading="lazy"
                 className="w-16 h-16 rounded-2xl object-cover border border-border grayscale"
               />
               <div>

@@ -105,7 +105,7 @@ export default function Karya() {
                       className="w-full h-full object-cover"
                       controls
                       playsInline
-                      preload="metadata"
+                      preload="none"
                     />
                   </div>
                 </SwiperSlide>

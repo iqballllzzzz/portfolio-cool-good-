@@ -17,6 +17,37 @@ function friendlyServerError(e: unknown): string {
   return msg.trim() ? msg.trim() : "Failed to reach the server";
 }
 
+// Kompres foto di browser sebelum upload ke Convex storage — biar file kecil,
+// hemat egress & storage (ini yang bikin batas free plan habis).
+async function compressImage(file: File, maxDim = 1600): Promise<Blob | File> {
+  if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return file;
+  const url = URL.createObjectURL(file);
+  try {
+    const img = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const el = new Image();
+      el.onload = () => resolve(el);
+      el.onerror = () => reject(new Error("decode failed"));
+      el.src = url;
+    });
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(img.width * scale));
+    canvas.height = Math.max(1, Math.round(img.height * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return file;
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, file.type === "image/png" ? "image/png" : "image/jpeg", 0.82),
+    );
+    if (!blob) return file;
+    return blob.size < file.size ? blob : file;
+  } catch {
+    return file;
+  } finally {
+    URL.revokeObjectURL(url);
+  }
+}
+
 export default function Admin() {
   // ── Password gate ────────────────────────────────────────────────────────
   const [pw, setPw] = useState("");
@@ -125,11 +156,12 @@ export default function Admin() {
     if (!file) return;
     setUploading(true);
     try {
+      const body = kind === "photo" ? await compressImage(file) : file;
       const uploadUrl = await generateUploadUrl();
       const res = await fetch(uploadUrl, {
         method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": body.type || file.type },
+        body,
       });
       if (!res.ok) throw new Error("Upload failed");
       const { storageId } = await res.json();
@@ -159,11 +191,12 @@ export default function Admin() {
     setUploadingAvatar(true);
     setMsg("");
     try {
+      const body = await compressImage(file);
       const uploadUrl = await generateUploadUrl();
       const res = await fetch(uploadUrl, {
         method: "POST",
-        headers: { "Content-Type": file.type },
-        body: file,
+        headers: { "Content-Type": body.type || file.type },
+        body,
       });
       if (!res.ok) throw new Error("Upload failed");
       const { storageId } = await res.json();
@@ -270,7 +303,7 @@ export default function Admin() {
             {kind === "photo" ? (
               <img src={item.url} alt={item.title} className="w-full aspect-square object-cover" />
             ) : (
-              <video src={item.url} className="w-full aspect-square object-cover" preload="metadata" />
+              <video src={item.url} className="w-full aspect-square object-cover" preload="none" />
             )}
             <button
               onClick={() => handleRemove(item._id)}
