@@ -6,6 +6,17 @@ import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIc
 import { Button } from "@/components/ui/button";
 import { STOCK_AVATAR } from "@/hooks/use-portfolio";
 
+function friendlyServerError(e: unknown): string {
+  const data = (e as { data?: { errorMessage?: unknown } } | undefined)?.data?.errorMessage;
+  const direct = (e as { errorMessage?: unknown } | undefined)?.errorMessage;
+  const message = (e as { message?: unknown } | undefined)?.message;
+  const msg =
+    typeof data === "string" ? data :
+    typeof direct === "string" ? direct :
+    typeof message === "string" ? message : "";
+  return msg.trim() ? msg.trim() : "Failed to reach the server";
+}
+
 export default function Admin() {
   // ── Password gate ────────────────────────────────────────────────────────
   const [pw, setPw] = useState("");
@@ -19,8 +30,8 @@ export default function Admin() {
       const r = await checkPw({ password: pw });
       if (r.ok) setLoggedIn(true);
       else setPwError("Wrong password");
-    } catch {
-      setPwError("Failed to reach the server");
+    } catch (e) {
+      setPwError(friendlyServerError(e));
     }
   };
 

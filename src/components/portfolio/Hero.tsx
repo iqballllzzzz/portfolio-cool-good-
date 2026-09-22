@@ -84,14 +84,16 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      <motion.div
-        animate={{ y: [0, 8, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground flex flex-col items-center gap-1 font-mono"
-      >
-        <span>{t("hero.scroll")}</span>
-        <ArrowDown className="w-3 h-3" />
-      </motion.div>
+      <div className="absolute bottom-6 inset-x-0 flex justify-center pointer-events-none">
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground flex flex-col items-center gap-1 font-mono"
+        >
+          <span>{t("hero.scroll")}</span>
+          <ArrowDown className="w-3 h-3" />
+        </motion.div>
+      </div>
     </section>
   );
 }
