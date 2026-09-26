@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
-import { useMutation, useQueries } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft, KeyRound, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -52,13 +51,39 @@ export default function Admin() {
   // ── Password gate ────────────────────────────────────────────────────────
   const [pw, setPw] = useState("");
   const [loggedIn, setLoggedIn] = useState(false);
+
+  const [profile, setProfile] = useState<any>(null);
+  const [photos, setPhotos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<any[]>([]);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    async function loadData() {
+      try {
+        const [p, ph, v] = await Promise.all([
+          api.getProfile(),
+          api.listMediaByKind('photo'),
+          api.listMediaByKind('video'),
+        ]);
+        setProfile(p);
+        setPhotos(ph);
+        setVideos(v);
+      } catch (e) {
+        console.error('Load error:', e);
+      } finally {
+        setDataLoading(false);
+      }
+    }
+    loadData();
+  }, [loggedIn]);
   const [pwError, setPwError] = useState("");
-  const checkPw = useMutation(api.profile.checkPassword);
+  // checkPw handled via api client
 
   const handleLogin = async () => {
     setPwError("");
     try {
-      const r = await checkPw({ password: pw });
+      const r = await api.checkPassword(pw);
       if (r.ok) setLoggedIn(true);
       else setPwError("Wrong password");
     } catch (e) {
@@ -72,16 +97,16 @@ export default function Admin() {
     photos: { query: api.media.listByKind, args: { kind: "photo" } },
     videos: { query: api.media.listByKind, args: { kind: "video" } },
   }), []);
-  const results = useQueries(queryMap);
-  const profile = results.profile instanceof Error ? null : results.profile;
-  const photos = results.photos instanceof Error ? [] : results.photos;
-  const videos = results.videos instanceof Error ? [] : results.videos;
-  const updateProfile = useMutation(api.profile.updateProfile);
-  const addMedia = useMutation(api.media.addMedia);
-  const removeMedia = useMutation(api.media.removeMedia);
-  const generateUploadUrl = useMutation(api.media.generateUploadUrl);
-  const setAvatar = useMutation(api.profile.setAvatar);
-  const setPassword = useMutation(api.profile.setPassword);
+  // See useEffect below for data loading
+  // profile loaded via useEffect
+  // photos loaded via useEffect
+  // videos loaded via useEffect
+  // updateProfile handled via api client
+  // addMedia handled via api client
+  // removeMedia handled via api client
+  // generateUploadUrl handled via api client
+  // setAvatar handled via api client
+  // setPassword handled via api client
 
   // ── Form state (isi otomatis dari profil) ─────────────────────────────────
   const [form, setForm] = useState<Record<string, string>>({});
@@ -165,7 +190,7 @@ export default function Admin() {
       });
       if (!res.ok) throw new Error("Upload failed");
       const { storageId } = await res.json();
-      await addMedia({ password: pw, kind, storageId, title: file.name });
+      await api.uploadMedia(pw, kind, file, title, url);
       setMsg(`✓ ${file.name} added`);
     } catch (e: any) {
       setMsg(`✕ Upload failed: ${e.message}`);
@@ -178,7 +203,7 @@ export default function Admin() {
   const handleRemove = async (id: string) => {
     if (!confirm("Delete this file?")) return;
     try {
-      await removeMedia({ password: pw, id: id as any });
+      await api.removeMedia(pw, id as any);
       setMsg("✓ Deleted");
     } catch (e: any) {
       setMsg(`✕ ${e.message}`);
@@ -222,7 +247,7 @@ export default function Admin() {
       return;
     }
     try {
-      await setPassword({ currentPassword: pw, newPassword: newPw });
+      await api.setPassword(pw, newPw);
       setMsg("✓ Password changed — use the new one from now on");
       setNewPw("");
       setNewPw2("");

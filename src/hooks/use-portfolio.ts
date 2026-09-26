@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
-import { useQueries, useMutation } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/api";
 
 export type PortfolioProfile = {
   _id: string;
@@ -36,27 +35,30 @@ export type PortfolioMedia = {
 };
 
 export function usePortfolio() {
-  const queryMap = useMemo(() => ({
-    profile: { query: api.profile.getProfile, args: {} },
-    photos: { query: api.media.listByKind, args: { kind: "photo" } },
-    videos: { query: api.media.listByKind, args: { kind: "video" } },
-  }), []);
-
-  const results = useQueries(queryMap);
-
-  const rawProfile = results.profile instanceof Error ? null : results.profile;
-  const rawPhotos = results.photos instanceof Error ? null : results.photos;
-  const rawVideos = results.videos instanceof Error ? null : results.videos;
-
-  const ensure = useMutation(api.profile.ensureProfile);
-  const [seeded, setSeeded] = useState(false);
+  const [profile, setProfile] = useState<PortfolioProfile | null>(null);
+  const [photos, setPhotos] = useState<PortfolioMedia[]>([]);
+  const [videos, setVideos] = useState<PortfolioMedia[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (rawProfile === null && !seeded) {
-      setSeeded(true);
-      void ensure({}).catch(() => {});
+    async function loadData() {
+      try {
+        const [profileData, photosData, videosData] = await Promise.all([
+          api.getProfile(),
+          api.listMediaByKind("photo"),
+          api.listMediaByKind("video"),
+        ]);
+        setProfile(profileData as any);
+        setPhotos(photosData);
+        setVideos(videosData);
+      } catch (error) {
+        console.error("Failed to load portfolio data:", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [rawProfile, seeded, ensure]);
+    loadData();
+  }, []);
 
   const fallbackProfile: PortfolioProfile = {
     _id: "fallback",
@@ -82,10 +84,10 @@ export function usePortfolio() {
   };
 
   return {
-    profile: (rawProfile as PortfolioProfile) ?? fallbackProfile,
-    photos: (Array.isArray(rawPhotos) ? rawPhotos : []) as PortfolioMedia[],
-    videos: (Array.isArray(rawVideos) ? rawVideos : []) as PortfolioMedia[],
-    loading: results.profile === undefined,
+    profile: profile ?? fallbackProfile,
+    photos,
+    videos,
+    loading,
   };
 }
 
