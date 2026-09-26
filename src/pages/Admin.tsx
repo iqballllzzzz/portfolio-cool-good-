@@ -91,23 +91,6 @@ export default function Admin() {
     }
   };
 
-  // ── Data ──────────────────────────────────────────────────────────────────
-  const queryMap = useMemo(() => ({
-    profile: { query: api.profile.getProfile, args: {} },
-    photos: { query: api.media.listByKind, args: { kind: "photo" } },
-    videos: { query: api.media.listByKind, args: { kind: "video" } },
-  }), []);
-  // See useEffect below for data loading
-  // profile loaded via useEffect
-  // photos loaded via useEffect
-  // videos loaded via useEffect
-  // updateProfile handled via api client
-  // addMedia handled via api client
-  // removeMedia handled via api client
-  // generateUploadUrl handled via api client
-  // setAvatar handled via api client
-  // setPassword handled via api client
-
   // ── Form state (isi otomatis dari profil) ─────────────────────────────────
   const [form, setForm] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState("");
