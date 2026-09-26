@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { api } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft, KeyRound, UserCircle } from "lucide-react";
