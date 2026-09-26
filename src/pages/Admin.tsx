@@ -131,8 +131,7 @@ export default function Admin() {
     setSaving(true);
     setMsg("");
     try {
-      await updateProfile({
-        password: pw,
+      await api.updateProfile(pw, {
         name: f.name,
         discordUsername: f.discordUsername,
         email: f.email,
@@ -199,16 +198,7 @@ export default function Admin() {
     setUploadingAvatar(true);
     setMsg("");
     try {
-      const body = await compressImage(file);
-      const uploadUrl = await generateUploadUrl();
-      const res = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": body.type || file.type },
-        body,
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      const { storageId } = await res.json();
-      const r = await setAvatar({ password: pw, storageId });
+      const r = await api.uploadAvatar(pw, file);
       setMsg("✓ Profile photo updated — shows everywhere instantly");
       return r.url;
     } catch (e: any) {
