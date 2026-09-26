@@ -9,7 +9,10 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ['http://localhost:5173', 'https://wazouzkii.my.id', 'https://*.vercel.app'],
+  credentials: true
+}));
 app.use(express.json());
 
 // File upload setup
@@ -269,6 +272,7 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: Date.now() });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Backend API running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Backend API running on http://0.0.0.0:${PORT}`);
+  console.log(`   External: http://144.24.140.153:${PORT}`);
 });
