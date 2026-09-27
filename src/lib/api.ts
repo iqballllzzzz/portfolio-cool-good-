@@ -124,11 +124,6 @@ class ApiClient {
     if (!res.ok) throw new Error('Failed to remove media');
     return res.json();
   }
-
-  // Generate upload URL stub (not needed for REST API, but keeping interface compatible)
-  async generateUploadUrl() {
-    return null; // Not used in REST implementation
-  }
 }
 
 export const api = new ApiClient();
