@@ -167,18 +167,20 @@ export default function Admin() {
   const handleUpload = async (kind: "photo" | "video", file: File | null) => {
     if (!file) return;
     setUploading(true);
+    setMsg("");
     try {
+      // Compress image if photo
       const body = kind === "photo" ? await compressImage(file) : file;
-      const uploadUrl = await generateUploadUrl();
-      const res = await fetch(uploadUrl, {
-        method: "POST",
-        headers: { "Content-Type": body.type || file.type },
-        body,
-      });
-      if (!res.ok) throw new Error("Upload failed");
-      const { storageId } = await res.json();
-      await api.uploadMedia(pw, kind, file, title, url);
-      setMsg(`✓ ${file.name} added`);
+      
+      // Upload directly to backend API
+      await api.uploadMedia(pw, kind, body, file.name, "");
+      
+      // Refetch media list
+      const updatedMedia = await api.listMedia();
+      setPhotos(updatedMedia.filter((m: any) => m.kind === "photo"));
+      setVideos(updatedMedia.filter((m: any) => m.kind === "video"));
+      
+      setMsg(`✓ ${file.name} uploaded`);
     } catch (e: any) {
       setMsg(`✕ Upload failed: ${e.message}`);
     } finally {
@@ -189,8 +191,15 @@ export default function Admin() {
   // ── Hapus media ───────────────────────────────────────────────────────────
   const handleRemove = async (id: string) => {
     if (!confirm("Delete this file?")) return;
+    setMsg("");
     try {
       await api.removeMedia(pw, id as any);
+      
+      // Refetch media list
+      const updatedMedia = await api.listMedia();
+      setPhotos(updatedMedia.filter((m: any) => m.kind === "photo"));
+      setVideos(updatedMedia.filter((m: any) => m.kind === "video"));
+      
       setMsg("✓ Deleted");
     } catch (e: any) {
       setMsg(`✕ ${e.message}`);

@@ -10,7 +10,13 @@ const PORT = process.env.PORT || 3001;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://wazouzkii.my.id', 'https://*.vercel.app'],
+  origin: [
+    'http://localhost:5173', 
+    'https://wazouzkii.my.id', 
+    'https://www.wazouzkii.my.id',
+    'https://*.vercel.app',
+    'https://contribution-cheap-hearing-shoes.trycloudflare.com'
+  ],
   credentials: true
 }));
 app.use(express.json());
