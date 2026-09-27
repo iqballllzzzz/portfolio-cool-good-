@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { usePortfolio, STOCK_AVATAR } from "@/hooks/use-portfolio";
+import { resolveAvatarUrl } from "@/lib/api";
 
 /**
  * Interactive 3D name card built with CSS 3D transforms.
