@@ -150,6 +150,11 @@ export default function Admin() {
         contactSubtitle: f.contactSubtitle,
         footer: f.footer,
       });
+      
+      // Refetch profile to update UI with new data
+      const updatedProfile = await api.getProfile();
+      setProfile(updatedProfile);
+      
       setMsg("✓ Saved");
     } catch (e: any) {
       setMsg(`✕ ${e.message ?? "Failed"}`);
@@ -199,6 +204,11 @@ export default function Admin() {
     setMsg("");
     try {
       const r = await api.uploadAvatar(pw, file);
+      
+      // Refetch profile to update avatar in UI
+      const updatedProfile = await api.getProfile();
+      setProfile(updatedProfile);
+      
       setMsg("✓ Profile photo updated — shows everywhere instantly");
       return r.url;
     } catch (e: any) {
