@@ -1,6 +1,17 @@
 // API Client untuk menggantikan Convex
 const API_BASE_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3001';
 
+// Helper to resolve avatar URLs
+export function resolveAvatarUrl(url: string | undefined): string {
+  if (!url) return '';
+  // If already full URL, return as-is
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url;
+  }
+  // Resolve relative URL with API base
+  return `${API_BASE_URL}${url}`;
+}
+
 class ApiClient {
   // Profile methods
   async getProfile() {

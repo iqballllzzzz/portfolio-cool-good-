@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 import NameTag3D from "./NameTag3D";
 import { usePortfolio, STOCK_AVATAR } from "@/hooks/use-portfolio";
+import { resolveAvatarUrl } from "@/lib/api";
 
 export default function Hero() {
   const { t } = useTranslation();
@@ -58,7 +59,7 @@ export default function Hero() {
 
           <div className="flex items-center gap-3 justify-center lg:justify-start">
             <img
-              src={profile.avatarUrl || STOCK_AVATAR}
+              src={resolveAvatarUrl(profile.avatarUrl) || STOCK_AVATAR}
               alt={`${profile.name} — avatar`}
               className="w-12 h-12 rounded-full object-cover border border-border grayscale"
             />

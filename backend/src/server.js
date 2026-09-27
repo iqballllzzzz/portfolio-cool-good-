@@ -52,6 +52,10 @@ app.get('/api/profile', (req, res) => {
     if (!profile) {
       return res.status(404).json({ error: 'Profile not found' });
     }
+    
+    // Remove sensitive data from response
+    delete profile.passwordHash;
+    
     profile.skillsLabels = JSON.parse(profile.skillsLabels || '[]');
     res.json(profile);
   } catch (error) {
@@ -144,7 +148,9 @@ app.post('/api/profile/upload-avatar', upload.single('file'), (req, res) => {
     db.prepare('UPDATE profile SET avatarUrl = ?, updatedAt = ? WHERE id = 1')
       .run(url, Date.now());
 
-    res.json({ ok: true, url });
+    // Return full URL including protocol and host
+    const fullUrl = `${req.protocol}://${req.get('host')}${url}`;
+    res.json({ ok: true, url: fullUrl });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

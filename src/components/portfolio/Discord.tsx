@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Gamepad2, MessagesSquare, User, Trophy } from "lucide-react";
 import { usePortfolio, STOCK_AVATAR } from "@/hooks/use-portfolio";
+import { resolveAvatarUrl } from "@/lib/api";
 
 /**
  * Discord — menampilkan username Discord owner (default: z1_ks).
@@ -39,7 +40,7 @@ export default function Discord() {
           >
             <div className="flex items-center gap-4 mb-6">
               <img
-                src={profile.avatarUrl || STOCK_AVATAR}
+                src={resolveAvatarUrl(profile.avatarUrl) || STOCK_AVATAR}
                 alt="Profile"
                 loading="lazy"
                 className="w-16 h-16 rounded-2xl object-cover border border-border grayscale"

@@ -1,5 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import { api } from "@/lib/api";
+import { api, resolveAvatarUrl } from "@/lib/api";
 import { motion } from "framer-motion";
 import { Lock, Save, Upload, Trash2, AlertCircle, CheckCircle2, Image as ImageIcon, Video, ArrowLeft, KeyRound, UserCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -359,7 +359,7 @@ export default function Admin() {
           </h2>
           <div className="flex items-center gap-5">
             <img
-              src={profile?.avatarUrl || STOCK_AVATAR}
+              src={resolveAvatarUrl(profile?.avatarUrl) || STOCK_AVATAR}
               alt="Avatar"
               className="w-20 h-20 rounded-full object-cover border border-border grayscale"
             />
