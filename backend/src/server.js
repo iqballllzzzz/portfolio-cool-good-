@@ -8,17 +8,16 @@ const db = require('./db');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors({
-  origin: [
-    'http://localhost:5173', 
-    'https://wazouzkii.my.id', 
-    'https://www.wazouzkii.my.id',
-    'https://*.vercel.app',
-    'https://contribution-cheap-hearing-shoes.trycloudflare.com'
-  ],
-  credentials: true
-}));
+// Middleware — allow localhost dev, production domain, and any Vercel URL
+const allowedOrigin = (origin, cb) => {
+  if (!origin) return cb(null, true);
+  const ok =
+    origin === 'http://localhost:5173' ||
+    /^https:\/\/(www\.)?wazouzkii\.my\.id$/.test(origin) ||
+    /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin);
+  cb(null, ok);
+};
+app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(express.json());
 
 // File upload setup
