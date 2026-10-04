@@ -1,3 +1,8 @@
 {
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://aqualibrya.my.id/api/:path*" },
+    { "source": "/uploads/:path*", "destination": "https://aqualibrya.my.id/uploads/:path*" },
+    { "source": "/health", "destination": "https://aqualibrya.my.id/health" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }

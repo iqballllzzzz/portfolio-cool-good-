@@ -1,8 +1,9 @@
 // API Client untuk menggantikan Convex
-// Permanent public API endpoint — Cloudflare named tunnel on the VPS (stable URL).
+// Same-origin via Vercel rewrite proxy (/api/* -> backend).
+// Tidak ada CORS, tidak ada masalah IPv6 — browser cuma bicara ke domain sendiri.
 // Bisa dioverride lewat Vercel env: VITE_API_URL=https://aqualibrya.my.id
 const API_BASE_URL =
-  (import.meta as any)?.env?.VITE_API_URL || 'https://aqualibrya.my.id';
+  (import.meta as any)?.env?.VITE_API_URL || '';
 
 // Helper to resolve avatar URLs
 export function resolveAvatarUrl(url: string | undefined): string {
@@ -11,8 +12,11 @@ export function resolveAvatarUrl(url: string | undefined): string {
   if (url.startsWith('http://') || url.startsWith('https://')) {
     return url;
   }
-  // Resolve relative URL with API base
-  return `${API_BASE_URL}${url}`;
+  // Resolve relative URL with page origin (Vercel proxy same-origin)
+  if (typeof window !== 'undefined') {
+    return `${window.location.origin}${url}`;
+  }
+  return url;
 }
 
 class ApiClient {
@@ -64,7 +68,10 @@ class ApiClient {
     });
     if (!res.ok) throw new Error('Failed to upload avatar');
     const data = await res.json();
-    return { ...data, url: `${API_BASE_URL}${data.url}` };
+    // data.url relatif (/uploads/...) — resolve via origin (Vercel proxy)
+    const rel = data.url.startsWith('http') ? new URL(data.url).pathname : data.url;
+    const full = typeof window !== 'undefined' ? `${window.location.origin}${rel}` : rel;
+    return { ...data, url: full };
   }
 
   // Media methods
@@ -75,7 +82,7 @@ class ApiClient {
     return media.map(m => ({
       ...m,
       _id: m.id.toString(),
-      url: m.url.startsWith('http') ? m.url : `${API_BASE_URL}${m.url}`,
+      url: m.url.startsWith('http') ? m.url : `${window.location.origin}${m.url}`,
       order: m.orderNum,
     }));
   }
@@ -87,7 +94,7 @@ class ApiClient {
     return media.map(m => ({
       ...m,
       _id: m.id.toString(),
-      url: m.url.startsWith('http') ? m.url : `${API_BASE_URL}${m.url}`,
+      url: m.url.startsWith('http') ? m.url : `${window.location.origin}${m.url}`,
       order: m.orderNum,
     }));
   }

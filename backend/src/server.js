@@ -53,6 +53,11 @@ const upload = multer({
 // Serve uploaded files
 app.use('/uploads', express.static(uploadDir));
 
+// Root endpoint — API only, no frontend
+app.get('/', (req, res) => {
+  res.json({ service: 'portfolio-api', status: 'ok', endpoints: '/health, /api/*, /uploads/*' });
+});
+
 // Helper: check password
 function checkPassword(password) {
   const profile = db.prepare('SELECT passwordHash FROM profile LIMIT 1').get();
