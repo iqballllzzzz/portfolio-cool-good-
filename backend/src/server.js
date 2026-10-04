@@ -16,6 +16,7 @@ const allowedOrigin = (origin, cb) => {
     origin === 'http://localhost:4173' ||
     /^https?:\/\/(www\.)?aqualibrya\.my\.id$/.test(origin) ||
     /^https:\/\/api\.aqualibrya\.my\.id$/.test(origin) ||
+    /^https:\/\/wazouzkii\.my\.id$/.test(origin) ||
     /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin);
   cb(null, ok);
 };
