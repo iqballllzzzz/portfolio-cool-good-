@@ -52,18 +52,6 @@ const upload = multer({
 // Serve uploaded files
 app.use('/uploads', express.static(uploadDir));
 
-// Serve frontend build (dist) — portfolio + API on one origin
-const distDir = path.join(__dirname, '../../dist');
-if (fs.existsSync(distDir)) {
-  app.use(express.static(distDir));
-  app.get('/*splat', (req, res, next) => {
-    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/') || req.path.startsWith('/health')) {
-      return next();
-    }
-    res.sendFile(path.join(distDir, 'index.html'));
-  });
-}
-
 // Helper: check password
 function checkPassword(password) {
   const profile = db.prepare('SELECT passwordHash FROM profile LIMIT 1').get();

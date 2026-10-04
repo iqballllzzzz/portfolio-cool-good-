@@ -1,8 +1,8 @@
 // API Client untuk menggantikan Convex
 // Permanent public API endpoint — Cloudflare named tunnel on the VPS (stable URL).
-// Bisa dioverride lewat Vercel env: VITE_API_URL=https://api.aqualibrya.my.id
+// Bisa dioverride lewat Vercel env: VITE_API_URL=https://aqualibrya.my.id
 const API_BASE_URL =
-  (import.meta as any)?.env?.VITE_API_URL || 'https://api.aqualibrya.my.id';
+  (import.meta as any)?.env?.VITE_API_URL || 'https://aqualibrya.my.id';
 
 // Helper to resolve avatar URLs
 export function resolveAvatarUrl(url: string | undefined): string {
