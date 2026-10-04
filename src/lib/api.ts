@@ -1,7 +1,8 @@
 // API Client untuk menggantikan Convex
 // Permanent public API endpoint — Cloudflare named tunnel on the VPS (stable URL).
-// NOTE: keep this a fixed https URL; quick-tunnel URLs (trycloudflare.com) die on restart.
-const API_BASE_URL = 'https://portfolio-api.axonagent.xyz';
+// Bisa dioverride lewat Vercel env: VITE_API_URL=https://api.aqualibrya.my.id
+const API_BASE_URL =
+  (import.meta as any)?.env?.VITE_API_URL || 'https://api.aqualibrya.my.id';
 
 // Helper to resolve avatar URLs
 export function resolveAvatarUrl(url: string | undefined): string {

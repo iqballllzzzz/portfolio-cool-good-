@@ -13,7 +13,9 @@ const allowedOrigin = (origin, cb) => {
   if (!origin) return cb(null, true);
   const ok =
     origin === 'http://localhost:5173' ||
-    /^https:\/\/(www\.)?wazouzkii\.my\.id$/.test(origin) ||
+    origin === 'http://localhost:4173' ||
+    /^https?:\/\/(www\.)?aqualibrya\.my\.id$/.test(origin) ||
+    /^https:\/\/api\.aqualibrya\.my\.id$/.test(origin) ||
     /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin);
   cb(null, ok);
 };
@@ -36,10 +38,31 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+const ALLOWED_MIME = /^(image\/(jpeg|png|gif|webp|avif|svg\+xml)|video\/(mp4|webm|quicktime|x-msvideo|x-matroska))$/;
+
+const upload = multer({
+  storage,
+  limits: { fileSize: 500 * 1024 * 1024 }, // 500MB max — video friendly
+  fileFilter: (req, file, cb) => {
+    if (ALLOWED_MIME.test(file.mimetype)) return cb(null, true);
+    cb(new Error('Tipe file tidak diizinkan: ' + file.mimetype));
+  }
+});
 
 // Serve uploaded files
 app.use('/uploads', express.static(uploadDir));
+
+// Serve frontend build (dist) — portfolio + API on one origin
+const distDir = path.join(__dirname, '../../dist');
+if (fs.existsSync(distDir)) {
+  app.use(express.static(distDir));
+  app.get('/*splat', (req, res, next) => {
+    if (req.path.startsWith('/api/') || req.path.startsWith('/uploads/') || req.path.startsWith('/health')) {
+      return next();
+    }
+    res.sendFile(path.join(distDir, 'index.html'));
+  });
+}
 
 // Helper: check password
 function checkPassword(password) {
